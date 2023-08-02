@@ -87,9 +87,7 @@ function getContractInstance() {
 app.post('/transferWithDetails', async (req, res) => {
   try {
     const contract = getContractInstance();
-
     const { to, amount, message } = req.body;
-
     // Convert the amount to wei (assuming amount is in ether)
     const amountInWei = web3.utils.toWei(amount.toString(), 'ether');
 
@@ -132,12 +130,16 @@ app.get("/tokentransactiondetails", async (req, res) => {
 
     let transactions = [];
     for (let i = 0; i < value; i++) {
+   
       const details = await contract.methods.getTransactionDetailsByIndex(i).call();
+      var value1= parseInt(details.value);
+      console.log(value1 /(10**18));
+      console.log(details);
       transactions.push({
         txhash :details.txHash ,
         from: details.from,
         to: details.to,
-        value: parseInt(details.value),
+        value: value1/(10**18),
         message: details.message,
         timestamp: parseInt(details.timestamp)
       });
