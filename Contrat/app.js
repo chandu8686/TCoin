@@ -5,6 +5,10 @@ const {Web3} = require("web3");
 const bodyParser = require("body-parser");
 const jsonBig = require("json-bigint");
 
+require('dotenv').config();
+const PRIVATEKEY = process.env["PRIVATEKEY"];
+const ADDRESS = process.env["ADDRESS"];
+
 
 const app = express();
 app.use(cors());
@@ -90,10 +94,10 @@ app.post('/transferWithDetails', async (req, res) => {
     const amountInWei = web3.utils.toWei(amount.toString(), 'ether');
 
     // Replace 'fromAddress' with the actual sender's address
-    const fromAddress = '0x585487Cd31B0a7cA9E44DE995A8ed71E9e5fBb28';
+    const fromAddress = ADDRESS ;
 
     // Replace 'privateKey' with the actual private key of the sender
-    const privateKey = '46266e02a63b3baea04f8def71208d394a5958a7cd7945dce2b778f8d175a250';
+    const privateKey = PRIVATEKEY ;
 
     const data = contract.methods.transferWithDetails(to, amountInWei, message).encodeABI();
     const gas = await contract.methods.transferWithDetails(to, amountInWei, message).estimateGas({ from: fromAddress });
