@@ -1,0 +1,144 @@
+{
+	"info": {
+		"_postman_id": "51250833-f786-4987-98df-deae6f01cf65",
+		"name": "Tcoin_matic",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11876636",
+		"_collection_link": "https://chandureddy-142.postman.co/workspace/Blockchain_HH~710dcf89-ad1e-4e71-8109-1711d9a1cce5/collection/11876636-51250833-f786-4987-98df-deae6f01cf65?action=share&creator=11876636&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "TokenDetails",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/tokendetails",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"tokendetails"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TokenTransactions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/tokentransactiondetails",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"tokentransactiondetails"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TransferwithDetails",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"to\": \"0x7D2F4608E6b9a047FAC13aBB0586bc140CFc1a7D\",\r\n  \"amount\": 5,\r\n  \"message\": \"Employee Reward Test\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/transferWithDetails",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"transferWithDetails"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetTransactionBasedonTXHASH",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/getTransactionDetails/0xa19c6152cf918693d6af0a3869dcd98ae2295c17e03afb9f095eb3d968130b91",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"getTransactionDetails",
+						"0xa19c6152cf918693d6af0a3869dcd98ae2295c17e03afb9f095eb3d968130b91"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Owner",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/getOwner",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"getOwner"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetTransactionDetails",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Balancecheck",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/balance/0x585487Cd31B0a7cA9E44DE995A8ed71E9e5fBb28",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"balance",
+						"0x585487Cd31B0a7cA9E44DE995A8ed71E9e5fBb28"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -165,7 +165,7 @@ app.get("/balance/:address", async (req, res) => {
   }
 });
 
-// API endpoint to mint new tokens (Only the contract owner can call this function)
+
 app.post("/mint", async (req, res) => {
   try {
     const { to, amount } = req.body;
@@ -177,6 +177,8 @@ app.post("/mint", async (req, res) => {
     res.status(500).json({ error: "Something went wrong." });
   }
 });
+
+
 
 // API endpoint to burn tokens (Only the contract owner can call this function)
 app.post("/burn", async (req, res) => {
@@ -302,6 +304,32 @@ app.get('/getTransactionDetails/:txHash', async (req, res) => {
     res.status(500).json({ error: 'Something went wrong.' });
   }
 });
+
+app.get('/gtd', async (req, res) => {
+  try {
+    //const txHash = req.params.txHash;
+    //const details = await getTransactionDetails(txHash);
+    const details = await contract.methods.getAllTransactionDetails().call();
+    
+    // Manually convert BigInt values to strings
+    const serializedDetails = details.map(transaction => {
+      return {
+        address1: transaction[0],
+        address2: transaction[1],
+        amount: transaction[2].toString(), // Convert BigInt to string
+        message: transaction[3],
+        timestamp: transaction[4].toString(), // Convert BigInt to string
+        hash: transaction[5],
+      };
+    });
+    
+    res.json(serializedDetails);
+  } catch (error) {
+    console.error('Error fetching transaction details:', error.message);
+    res.status(500).json({ error: 'Something went wrong.' });
+  }
+});
+
 
 const port = 3000; // You can change this to any desired port number
 app.listen(port, () => {
