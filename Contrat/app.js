@@ -123,6 +123,8 @@ app.post('/transferWithDetails', async (req, res) => {
   }
 });
 
+
+
 app.get("/tokentransactiondetails", async (req, res) => {
   try {
     const count = await contract.methods.getTotalTransactionDetailsCount().call();
@@ -133,8 +135,8 @@ app.get("/tokentransactiondetails", async (req, res) => {
    
       const details = await contract.methods.getTransactionDetailsByIndex(i).call();
       var value1= parseInt(details.value);
-      console.log(value1 /(10**18));
-      console.log(details);
+      //console.log(value1 /(10**18));
+      //console.log(details);
       transactions.push({
         txhash :details.txHash ,
         from: details.from,
