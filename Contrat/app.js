@@ -29,17 +29,11 @@ const rpcUrl = 'https://rpc-mumbai.maticvigil.com/';
 // Replace 'your_contract_address' with the actual deployed contract address on the Polygon testnet
 const contractAddress = '0xFD361c8A966daC9D55A337f46887Dc6c82D2D5C4';
 
-// Read the contract ABI from the JSON file
 const contractABI = JSON.parse(fs.readFileSync('./build/polygon-contracts/TCoin.json', 'utf8'));
 
 // Create a web3 instance using the provided RPC URL
 const web3 = new Web3(rpcUrl);
 
-// Create a new web3 instance using the MetaMask provider
-// const provider = new Web3.providers.WebsocketProvider(rpcUrl); // Replace with your Polygon RPC URL
-// const web3 = new Web3(provider);
-
-// Get the contract instance
 const contract = new web3.eth.Contract(contractABI.abi, contractAddress);
 
 // Function to call the 'getTotalTransactionDetailsCount' function from the contract
@@ -116,6 +110,38 @@ app.post('/transferWithDetails', async (req, res) => {
 
     const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
 
+    res.json({ transactionHash: receipt.transactionHash });
+  } catch (error) {
+    console.error('Error sending transaction:', error.message);
+    res.status(500).json({ error: 'Something went wrong.' });
+  }
+});
+
+app.post('/usertransferWithDetails', async (req, res) => {
+  try {
+    const contract = getContractInstance();
+    const {from , to, amount, message ,pk } = req.body;
+    // Convert the amount to wei (assuming amount is in ether)
+    const amountInWei = web3.utils.toWei(amount.toString(), 'ether');
+    // Replace 'fromAddress' with the actual sender's address
+    //const fromAddress = from;
+    const privateKey = pk; //'0x02e079a5560b75cac16927001e23ec141eabfa7d7d3e2a22e1fc8187cad20071';
+    const data = contract.methods.usertransferWithDetails(from ,to, amountInWei, message).encodeABI();
+    const gas = await contract.methods.usertransferWithDetails(from ,to, amountInWei, message).estimateGas({ from: from });
+    const gasPrice = await web3.eth.getGasPrice();
+    const nonce = await web3.eth.getTransactionCount(from);
+    const signedTx = await web3.eth.accounts.signTransaction(
+      {
+        from: from,
+        to: contractAddress,
+        gas,
+        gasPrice,
+        data,
+        nonce,
+      },
+      privateKey
+    );
+    const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
     res.json({ transactionHash: receipt.transactionHash });
   } catch (error) {
     console.error('Error sending transaction:', error.message);

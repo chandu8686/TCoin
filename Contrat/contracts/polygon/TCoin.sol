@@ -11,11 +11,22 @@ contract TCoin is ERC20, Ownable {
         uint256 value;
         string message;
         uint256 timestamp;
+        bytes32 txHash;
     }
 
     // Array to store transaction details
     TransactionDetails[] public transactionDetails;
     mapping(bytes32 => uint256) private transactionHashToIndex;
+
+    // Event for logging transaction details
+    event TransactionDetailsLogged(
+        address indexed from,
+        address indexed to,
+        uint256 value,
+        string message,
+        uint256 timestamp,
+        bytes32 indexed txHash
+    );
 
     constructor(
         string memory name,
@@ -39,7 +50,6 @@ contract TCoin is ERC20, Ownable {
     function transferWithDetails(address to, uint256 amount, string memory message) public {
         require(amount > 0, "Amount must be greater than zero");
         _transfer(msg.sender, to, amount);
-
         // Emit event with transaction details including the hash and timestamp
         bytes32 txHash = keccak256(abi.encodePacked(msg.sender, to, amount, message, block.timestamp));
         transactionHashToIndex[txHash] = transactionDetails.length;
@@ -48,13 +58,60 @@ contract TCoin is ERC20, Ownable {
             to: to,
             value: amount,
             message: message,
-            timestamp: block.timestamp
+            timestamp: block.timestamp,
+            txHash: txHash
         }));
+        // Emit the event with transaction details
+        emit TransactionDetailsLogged(msg.sender, to, amount, message, block.timestamp, txHash);
     }
+
+    function usertransferWithDetails(address from, address to, uint256 amount, string memory message) public {
+    require(amount > 0, "Amount must be greater than zero");
+    _transfer(from, to, amount);
+
+    // Emit event with transaction details including the actual hash and timestamp
+    bytes32 actualTxHash = keccak256(abi.encodePacked(msg.sender, from, to, amount, message, block.timestamp));
+    transactionHashToIndex[actualTxHash] = transactionDetails.length;
+    transactionDetails.push(TransactionDetails({
+        from: from,
+        to: to,
+        value: amount,
+        message: message,
+        timestamp: block.timestamp,
+        txHash: actualTxHash
+    }));
+
+    // Emit the event with transaction details
+    emit TransactionDetailsLogged(from, to, amount, message, block.timestamp, actualTxHash);
+}
+
+
 
     // Function to transfer ownership to a new address (Only the current owner can call this function)
     function transferOwnership(address newOwner) public override onlyOwner {
         _transferOwnership(newOwner);
+    }
+
+    // Function to retrieve transaction details by transaction hash
+    function getTransactionDetailsByHash(bytes32 txHash) public view returns (
+        address from,
+        address to,
+        uint256 value,
+        string memory message,
+        uint256 timestamp,
+        bytes32 txhash
+    ) {
+        uint256 index = transactionHashToIndex[txHash];
+        require(index > 0 && index <= transactionDetails.length, "Invalid transaction hash");
+        TransactionDetails memory details = transactionDetails[index - 1];
+        return (
+            details.from,
+            details.to,
+            details.value,
+            details.message,
+            details.timestamp,
+            details.txHash
+        );
     }
 
     function getTransactionDetailsByIndex(uint256 index) public view returns (
@@ -66,27 +123,6 @@ contract TCoin is ERC20, Ownable {
     ) {
         require(index < transactionDetails.length, "Invalid index");
         TransactionDetails memory details = transactionDetails[index];
-        return (
-            details.from,
-            details.to,
-            details.value,
-            details.message,
-            details.timestamp
-        );
-    }
-
-
-    // Function to retrieve transaction details by transaction hash
-    function getTransactionDetailsByHash(bytes32 txHash) public view returns (
-        address from,
-        address to,
-        uint256 value,
-        string memory message,
-        uint256 timestamp
-    ) {
-        uint256 index = transactionHashToIndex[txHash];
-        require(index > 0 && index <= transactionDetails.length, "Invalid transaction hash");
-        TransactionDetails memory details = transactionDetails[index - 1];
         return (
             details.from,
             details.to,
