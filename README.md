@@ -16,3 +16,5 @@ after cloning the code - npm install
 Postman collection  has attached :
 
 
+git remote add origin https://github.com/techoutsblockchain/loyality.git
+git push -u -f origin master
